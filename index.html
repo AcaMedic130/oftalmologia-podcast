@@ -4,16 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Oftalmología | Podcast</title>
-  <!-- Fuentes de Google (funcionan en GitHub Pages porque son externas) -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <!-- Iconos Flaticon (funcionan en GitHub Pages porque son externos) -->
-  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.0.0/uicons-brands/css/uicons-brands.css">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.0.0/uicons-brands/css/uicons-brands.css'>
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
-  <!-- Chart.js para los gráficos (funciona en GitHub Pages porque es externo) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Aquí va todo el CSS que ya tenías, sin cambios */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -323,6 +319,8 @@
       font-style: italic;
       display: none;
     }
+
+    /* Estilos del Dashboard */
     .dashboard-icon {
       position: fixed;
       top: 15px;
@@ -363,7 +361,7 @@
     }
     .dashboard-content {
       background: #f4f6fb;
-      border-radius: 20px 0 0 20px;
+      border-radius: 20px 0 0 20px; /* 20px en superior izquierda e inferior derecha, 0px en superior derecha e inferior izquierda */
       padding: 20px 20px 50px 20px;
       width: 1400px;
       height: 800px;
@@ -669,6 +667,8 @@
     .spacer {
       height: 50px;
     }
+
+    /* Media Queries */
     @media (max-width: 1024px) {
       .container { width: 94%; padding: 10px; gap: 10px; }
       .content { padding: 1.5rem; }
@@ -856,7 +856,7 @@
     </div>
   </div>
 
-  <!-- Contenido principal -->
+  <!-- Contenido original -->
   <div class="container">
     <aside class="sidebar">
       <div class="segment controls">
@@ -882,7 +882,7 @@
       </div>
       <div class="segment search-container">
         <h3>Buscador</h3>
-        <input type="text" id="search" placeholder="Escribe aquí para искать una clase" />
+        <input type="text" id="search" placeholder="Escribe aquí para buscar una clase" />
       </div>
       <div class="segment topics-container">
         <h3>Lista de temas</h3>
@@ -1085,12 +1085,11 @@
     </main>
   </div>
   <script>
-    // Este código JavaScript funciona perfectamente en GitHub Pages porque usa recursos externos y Google Apps Script como backend
     document.addEventListener('DOMContentLoaded', () => {
       const topicButtons = document.querySelectorAll('.topic-list li button');
       const sections = document.querySelectorAll('.section');
       const totalTopics = topicButtons.length;
-      let markedStars = {};
+      const markedStars = JSON.parse(localStorage.getItem('markedStars')) || {};
       const searchInput = document.getElementById('search');
       const noResultsMessage = document.getElementById('no-results');
       const colorFilter = document.getElementById('color-filter');
@@ -1099,59 +1098,6 @@
       const dashboardPopup = document.querySelector('.dashboard-popup');
       const closeBtn = document.querySelector('.close-btn');
       let byDayChart, bySectionPriorityChart, bySectionChart, totalProgressChart;
-
-      // URL del Web App de Google Apps Script proporcionada por ti
-      const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyaPyYk4xgmxqP79Xm2K__Y_7cMklSLf5Ff14yzuwTmKtvsdqP5h1zFQWrj5Fe9GnEc/exec";
-
-      // Cargar datos desde Google Apps Script al iniciar
-      function loadStars() {
-        fetch(WEB_APP_URL)
-          .then(response => {
-            if (!response.ok) throw new Error('Error al cargar datos');
-            return response.json();
-          })
-          .then(data => {
-            markedStars = data || {};
-            restoreStars();
-          })
-          .catch(error => console.error('Error al cargar datos:', error));
-      }
-
-      // Guardar datos en Google Apps Script
-      function saveStars() {
-        fetch(WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify(markedStars),
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(response => {
-          if (!response.ok) throw new Error('Error al guardar datos');
-          return response.text();
-        })
-        .then(text => console.log(text))
-        .catch(error => console.error('Error al guardar datos:', error));
-      }
-
-      // Restaurar estado inicial de las estrellas
-      function restoreStars() {
-        topicButtons.forEach(button => {
-          const id = button.getAttribute('data-id');
-          const star = button.querySelector('.star');
-          if (markedStars[id]?.marked) {
-            star.classList.add('marked');
-            star.classList.remove('fi-rr-star');
-            star.classList.add('fi-sr-star');
-          } else {
-            star.classList.remove('marked');
-            star.classList.add('fi-rr-star');
-            star.classList.remove('fi-sr-star');
-          }
-        });
-        updateDashboard();
-      }
-
-      // Cargar datos al iniciar
-      loadStars();
 
       // Evento para mostrar el dashboard
       dashboardIcon.addEventListener('click', (e) => {
@@ -1451,10 +1397,15 @@
         }
       }
 
-      // Manejar clics en los botones de temas
+      // Restaurar estado de las estrellas y manejar clics
       topicButtons.forEach(button => {
         const id = button.getAttribute('data-id');
         const star = button.querySelector('.star');
+        if (markedStars[id]?.marked) {
+          star.classList.add('marked');
+          star.classList.remove('fi-rr-star');
+          star.classList.add('fi-sr-star');
+        }
 
         button.addEventListener('click', () => {
           const isMarked = star.classList.contains('marked');
@@ -1469,12 +1420,11 @@
             star.classList.add('fi-sr-star');
             markedStars[id] = { marked: true, date: new Date().toISOString() };
           }
-          saveStars(); // Guardar en Google Apps Script
+          localStorage.setItem('markedStars', JSON.stringify(markedStars));
           updateDashboard();
         });
       });
 
-      // Funciones de búsqueda
       function normalizeText(text) {
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
       }
