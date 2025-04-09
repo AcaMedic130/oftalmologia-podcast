@@ -319,8 +319,6 @@
       font-style: italic;
       display: none;
     }
-
-    /* Estilos del Dashboard */
     .dashboard-icon {
       position: fixed;
       top: 15px;
@@ -361,7 +359,7 @@
     }
     .dashboard-content {
       background: #f4f6fb;
-      border-radius: 20px 0 0 20px; /* 20px en superior izquierda e inferior derecha, 0px en superior derecha e inferior izquierda */
+      border-radius: 20px 0 0 20px;
       padding: 20px 20px 50px 20px;
       width: 1400px;
       height: 800px;
@@ -431,10 +429,6 @@
       font-size: 24px;
       color: #5271ff;
       margin-bottom: 5px;
-      transition: transform 0.3s ease;
-    }
-    .indicator:hover .icon {
-      transform: rotate(10deg);
     }
     .indicator .value {
       font-size: 24px;
@@ -479,7 +473,6 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease;
       height: auto;
-      min-height: unset;
     }
     .dashboard-section:hover {
       transform: translateY(-3px);
@@ -497,13 +490,6 @@
       color: #5271ff;
       font-size: 16px;
     }
-    .dashboard-section.total-desertion {
-      padding-top: 15px;
-    }
-    .total-desertion h3 {
-      text-align: left;
-      margin-bottom: 15px;
-    }
     .total-desertion .chart-container {
       display: flex;
       flex-direction: column;
@@ -518,73 +504,12 @@
       height: 200px !important;
       margin-bottom: 20px;
     }
-    .total-desertion .chart-legend {
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-      justify-content: center;
-    }
-    .dashboard-section.by-reason {
-      padding-top: 15px;
-    }
-    .by-reason #byPriority {
-      padding-left: 20px;
-    }
     .by-reason .reason-item {
       display: flex;
       justify-content: space-between;
       margin-bottom: 5px;
       font-size: 12px;
       color: #78829d;
-      transition: background 0.2s ease;
-    }
-    .by-reason .reason-item:hover {
-      background: #e6f0ff;
-      border-radius: 5px;
-    }
-    .by-reason .reason-item i {
-      color: #5271ff;
-      font-size: 14px;
-    }
-    .by-reason .reason-item span {
-      font-size: 12px;
-      color: #78829d;
-      word-break: break-word;
-      flex: 1;
-    }
-    .by-reason .reason-item .value {
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-    .dashboard-section.by-hours {
-      padding-top: 15px;
-    }
-    .by-hours canvas {
-      width: 100% !important;
-      height: 150px !important;
-      padding-left: 20px;
-    }
-    .dashboard-section.by-gender-age {
-      padding-top: 15px;
-    }
-    .by-gender-age canvas {
-      width: 100% !important;
-      height: 250px !important;
-      padding-left: 20px;
-    }
-    .dashboard-section.by-education {
-      padding-top: 15px;
-    }
-    .by-education canvas {
-      width: 100% !important;
-      height: 250px !important;
-      padding-left: 20px;
-    }
-    .dashboard-section.by-gender {
-      padding-top: 15px;
-    }
-    .by-gender #bySection {
-      padding-left: 20px;
     }
     .by-gender .gender-item {
       display: flex;
@@ -593,40 +518,15 @@
       margin-bottom: 10px;
       font-size: 12px;
       color: #78829d;
-      transition: background 0.2s ease;
-    }
-    .by-gender .gender-item:hover {
-      background: #e6f0ff;
-      border-radius: 5px;
     }
     .by-gender .gender-item i {
       color: #5271ff;
       font-size: 14px;
       margin-right: 5px;
-      flex-shrink: 0;
-    }
-    .by-gender .gender-item span:first-child {
-      display: flex;
-      align-items: center;
-      font-size: 12px;
-      color: #78829d;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-grow: 1;
     }
     .by-gender .gender-item .value {
-      font-size: 12px;
       font-weight: 600;
       color: #ff4d4f;
-      flex-shrink: 0;
-      padding-left: 10px;
-    }
-    .dashboard-section.total-relation {
-      padding-top: 15px;
-    }
-    .total-relation #totalRelation {
-      padding-left: 20px;
     }
     .total-relation .relation-item {
       display: flex;
@@ -635,47 +535,27 @@
       margin-bottom: 10px;
       font-size: 12px;
       color: #78829d;
-      transition: background 0.2s ease;
-    }
-    .total-relation .relation-item:hover {
-      background: #e6f0ff;
-      border-radius: 5px;
     }
     .total-relation .relation-item i {
       color: #5271ff;
       font-size: 14px;
       margin-right: 5px;
-      flex-shrink: 0;
-    }
-    .total-relation .relation-item span:first-child {
-      display: flex;
-      align-items: center;
-      font-size: 12px;
-      color: #78829d;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-grow: 1;
     }
     .total-relation .relation-item .value {
-      font-size: 12px;
       font-weight: 600;
       color: #ff4d4f;
-      flex-shrink: 0;
-      padding-left: 10px;
     }
-    .spacer {
-      height: 50px;
+    .by-hours canvas,
+    .by-gender-age canvas,
+    .by-education canvas {
+      width: 100% !important;
+      height: 150px !important;
+      padding-left: 20px;
     }
-
-    /* Media Queries */
     @media (max-width: 1024px) {
       .container { width: 94%; padding: 10px; gap: 10px; }
       .content { padding: 1.5rem; }
-      .sidebar { 
-        height: calc(100vh - 20px);
-        padding: 0px 2px 2px 2px;
-      }
+      .sidebar { height: calc(100vh - 20px); padding: 0px 2px 2px 2px; }
       .topics-container { height: calc(100vh - 286px); }
       .topics-content { max-height: calc(100% - 40px); }
       .controls { top: 0; }
@@ -685,62 +565,20 @@
     @media (max-width: 768px) {
       body { height: auto; min-height: auto; overflow-y: auto; }
       .container { flex-direction: column; width: 96%; min-height: auto; height: auto; }
-      .sidebar { 
-        width: 100%; 
-        height: auto; 
-        overflow-y: visible; 
-        padding: 10px;
-      }
+      .sidebar { width: 100%; height: auto; overflow-y: visible; padding: 10px; }
       .content { height: auto; overflow-y: visible; }
       .recurso-item { width: 150px; }
       .video-frame { padding-bottom: 56.25%; margin-bottom: 1rem; }
-      body, .topics-content {
-        scrollbar-width: none;
-      }
-      body::-webkit-scrollbar,
-      .topics-content::-webkit-scrollbar {
-        display: none;
-      }
-      .controls, .search-container {
-        position: static;
-      }
-      .topics-container { 
-        height: auto; 
-        overflow: visible; 
-      }
-      .topics-content { 
-        max-height: none; 
-        overflow-y: visible; 
-      }
-      .dashboard-content { 
-        width: 95%; 
-        height: auto; 
-        max-height: 90vh;
-        padding: 15px;
-      }
-      .dashboard-body { 
-        flex-direction: column; 
-      }
-      .dashboard-left,
-      .dashboard-center,
-      .dashboard-right { 
-        width: 100%; 
-      }
-      .dashboard-indicators { 
-        flex-wrap: wrap; 
-      }
-      .indicator { 
-        flex: 1 1 45%; 
-      }
-      .dashboard-section.by-gender,
-      .dashboard-section.by-reason,
-      .dashboard-section.by-hours,
-      .dashboard-section.by-gender-age,
-      .dashboard-section.by-education,
-      .dashboard-section.total-relation,
-      .dashboard-section.total-desertion { 
-        min-height: unset; 
-      }
+      body, .topics-content { scrollbar-width: none; }
+      body::-webkit-scrollbar, .topics-content::-webkit-scrollbar { display: none; }
+      .controls, .search-container { position: static; }
+      .topics-container { height: auto; overflow: visible; }
+      .topics-content { max-height: none; overflow-y: visible; }
+      .dashboard-content { width: 95%; height: auto; max-height: 90vh; padding: 15px; }
+      .dashboard-body { flex-direction: column; }
+      .dashboard-left, .dashboard-center, .dashboard-right { width: 100%; }
+      .dashboard-indicators { flex-wrap: wrap; }
+      .indicator { flex: 1 1 45%; }
     }
     @media (max-width: 480px) {
       .container { width: 96%; padding: 5px; }
@@ -752,27 +590,10 @@
       .youtube-icon { font-size: 20px; width: 24px; height: 24px; }
       .controls { flex-direction: column; }
       .sidebar { height: auto; padding: 5px; }
-      .topics-container { 
-        height: auto; 
-        overflow: visible; 
-      }
-      .topics-content { 
-        max-height: none; 
-        overflow-y: visible; 
-      }
+      .topics-container { height: auto; overflow: visible; }
+      .topics-content { max-height: none; overflow-y: visible; }
       .dashboard-content { width: 95%; padding: 10px; }
-      .indicator { 
-        flex: 1 1 100%; 
-      }
-      .dashboard-section.by-gender,
-      .dashboard-section.by-reason,
-      .dashboard-section.by-hours,
-      .dashboard-section.by-gender-age,
-      .dashboard-section.by-education,
-      .dashboard-section.total-relation,
-      .dashboard-section.total-desertion { 
-        min-height: unset; 
-      }
+      .indicator { flex: 1 1 100%; }
     }
   </style>
 </head>
@@ -827,7 +648,7 @@
             <div id="byPriority"></div>
           </div>
           <div class="dashboard-section by-hours">
-            <h3><i class="fi fi-rr-calendar"></i> Completitud por Día de la Semana</h3>
+            <h3><i class="fi fi-rr-calendar"></i> Completitud por Día</h3>
             <canvas id="byDayChart"></canvas>
           </div>
         </div>
@@ -837,26 +658,29 @@
             <canvas id="bySectionPriorityChart"></canvas>
           </div>
           <div class="dashboard-section by-education">
-            <h3><i class="fi fi-rr-chart-bar"></i> Completitud por Sección</h3>
-            <canvas id="bySectionChart"></canvas>
+            <h3><i class="fi fi-rr-chart-bar"></i> Completitud por Se Libros relacionados (usados y nuevos) - ISBN: 978-0-691-17046-6
+
+            <div class="dashboard-section by-education">
+              <h3><i class="fi fi-rr-chart-bar"></i> Completitud por Sección</h3>
+              <canvas id="bySectionChart"></canvas>
+            </div>
+          </div>
+          <div class="dashboard-right">
+            <div class="dashboard-section by-gender">
+              <h3><i class="fi fi-rr-book"></i> Completitud por Sección</h3>
+              <div id="bySection"></div>
+            </div>
+            <div class="dashboard-section total-relation">
+              <h3><i class="fi fi-rr-stats"></i> Relación Total</h3>
+              <div id="totalRelation"></div>
+            </div>
           </div>
         </div>
-        <div class="dashboard-right">
-          <div class="dashboard-section by-gender">
-            <h3><i class="fi fi-rr-book"></i> Completitud por Sección</h3>
-            <div id="bySection"></div>
-          </div>
-          <div class="dashboard-section total-relation">
-            <h3><i class="fi fi-rr-stats"></i> Relación Total</h3>
-            <div id="totalRelation"></div>
-          </div>
-        </div>
-        <div class="spacer"></div>
       </div>
     </div>
   </div>
 
-  <!-- Contenido original -->
+  <!-- Contenido principal -->
   <div class="container">
     <aside class="sidebar">
       <div class="segment controls">
@@ -1084,6 +908,7 @@
       </div>
     </main>
   </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const topicButtons = document.querySelectorAll('.topic-list li button');
@@ -1099,28 +924,57 @@
       const closeBtn = document.querySelector('.close-btn');
       let byDayChart, bySectionPriorityChart, bySectionChart, totalProgressChart;
 
-      // Evento para mostrar el dashboard
+      // Restaurar estado de las estrellas desde localStorage
+      function restoreStars() {
+        topicButtons.forEach(button => {
+          const id = button.getAttribute('data-id');
+          const star = button.querySelector('.star');
+          if (markedStars[id]?.marked) {
+            star.classList.add('marked');
+            star.classList.remove('fi-rr-star');
+            star.classList.add('fi-sr-star');
+          }
+        });
+      }
+
+      // Manejar clics en las estrellas
+      topicButtons.forEach(button => {
+        const id = button.getAttribute('data-id');
+        const star = button.querySelector('.star');
+
+        star.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isMarked = star.classList.contains('marked');
+          if (isMarked) {
+            star.classList.remove('marked');
+            star.classList.remove('fi-sr-star');
+            star.classList.add('fi-rr-star');
+            markedStars[id] = { marked: false, date: null };
+          } else {
+            star.classList.add('marked');
+            star.classList.remove('fi-rr-star');
+            star.classList.add('fi-sr-star');
+            markedStars[id] = { marked: true, date: new Date().toISOString() };
+          }
+          localStorage.setItem('markedStars', JSON.stringify(markedStars));
+          updateDashboard();
+        });
+      });
+
+      // Mostrar/Ocultar Dashboard
       dashboardIcon.addEventListener('click', (e) => {
         e.stopPropagation();
         dashboardPopup.style.display = 'flex';
-        try {
-          if (!byDayChart || !bySectionPriorityChart || !bySectionChart || !totalProgressChart) {
-            initializeCharts();
-          }
-          updateDashboard();
-        } catch (error) {
-          console.error('Error al inicializar o actualizar el dashboard:', error);
+        if (!byDayChart || !bySectionPriorityChart || !bySectionChart || !totalProgressChart) {
+          initializeCharts();
         }
+        updateDashboard();
       });
 
-      // Cerrar popup al clic fuera
       dashboardPopup.addEventListener('click', (e) => {
-        if (e.target === dashboardPopup) {
-          dashboardPopup.style.display = 'none';
-        }
+        if (e.target === dashboardPopup) dashboardPopup.style.display = 'none';
       });
 
-      // Cerrar popup con botón
       closeBtn.addEventListener('click', () => {
         dashboardPopup.style.display = 'none';
       });
@@ -1140,7 +994,6 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 12 }, color: '#78829d' } } },
             scales: { y: { beginAtZero: true } }
           }
         });
@@ -1151,19 +1004,15 @@
           data: {
             labels: [],
             datasets: [
-              { label: 'Rojo (Baja)', data: [], backgroundColor: '#ff4d4f' },
-              { label: 'Amarillo (Media)', data: [], backgroundColor: '#ffd600' },
-              { label: 'Verde (Alta)', data: [], backgroundColor: '#00c853' }
+              { label: 'Rojo', data: [], backgroundColor: '#ff4d4f' },
+              { label: 'Amarillo', data: [], backgroundColor: '#ffd600' },
+              { label: 'Verde', data: [], backgroundColor: '#00c853' }
             ]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 12 }, color: '#78829d' } } },
-            scales: {
-              x: { stacked: true, ticks: { font: { size: 10 }, color: '#78829d' } },
-              y: { stacked: true, beginAtZero: true, max: 1, ticks: { callback: value => (value * 100) + '%' } }
-            }
+            scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
           }
         });
 
@@ -1178,11 +1027,7 @@
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 12 }, color: '#78829d' } } },
-            scales: {
-              x: { beginAtZero: true, max: 1, ticks: { callback: value => (value * 100) + '%' } },
-              y: { ticks: { font: { size: 10 }, color: '#78829d' } }
-            }
+            scales: { x: { beginAtZero: true, max: 1 } }
           }
         });
 
@@ -1196,28 +1041,7 @@
           options: {
             responsive: true,
             maintainAspectRatio: true,
-            cutout: '70%',
-            plugins: {
-              legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                  font: { size: 12 },
-                  color: '#78829d',
-                  boxWidth: 12,
-                  padding: 10,
-                  generateLabels: chart => chart.data.labels.map((label, i) => ({
-                    text: label,
-                    fillStyle: chart.data.datasets[0].backgroundColor[i],
-                    strokeStyle: chart.data.datasets[0].backgroundColor[i],
-                    lineWidth: 0,
-                    hidden: false,
-                    index: i
-                  }))
-                },
-                onClick: () => {}
-              }
-            }
+            cutout: '70%'
           }
         });
       }
@@ -1232,8 +1056,7 @@
         let totalPointsPossible = 0;
         let completedPoints = 0;
 
-        const allButtons = document.querySelectorAll('.topic-list li button');
-        allButtons.forEach(button => {
+        topicButtons.forEach(button => {
           const icon = button.querySelector('.youtube-icon');
           if (icon) {
             if (icon.classList.contains('icon-rojo')) totalPointsPossible += priorityWeights['icon-rojo'];
@@ -1284,7 +1107,7 @@
         const priorityCounts = { red: 0, yellow: 0, green: 0 };
         const priorityTotals = { red: 0, yellow: 0, green: 0 };
 
-        allButtons.forEach(button => {
+        topicButtons.forEach(button => {
           const icon = button.querySelector('.youtube-icon');
           if (icon) {
             if (icon.classList.contains('icon-rojo')) priorityTotals.red++;
@@ -1397,98 +1220,28 @@
         }
       }
 
-      // Restaurar estado de las estrellas y manejar clics
-      topicButtons.forEach(button => {
-        const id = button.getAttribute('data-id');
-        const star = button.querySelector('.star');
-        if (markedStars[id]?.marked) {
-          star.classList.add('marked');
-          star.classList.remove('fi-rr-star');
-          star.classList.add('fi-sr-star');
-        }
-
-        button.addEventListener('click', () => {
-          const isMarked = star.classList.contains('marked');
-          if (isMarked) {
-            star.classList.remove('marked');
-            star.classList.remove('fi-sr-star');
-            star.classList.add('fi-rr-star');
-            markedStars[id] = { marked: false, date: null };
-          } else {
-            star.classList.add('marked');
-            star.classList.remove('fi-rr-star');
-            star.classList.add('fi-sr-star');
-            markedStars[id] = { marked: true, date: new Date().toISOString() };
-          }
-          localStorage.setItem('markedStars', JSON.stringify(markedStars));
-          updateDashboard();
-        });
-      });
-
-      function normalizeText(text) {
-        return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-      }
-
-      function levenshteinDistance(a, b) {
-        const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
-        for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
-        for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
-        for (let j = 1; j <= b.length; j++) {
-          for (let i = 1; i <= a.length; i++) {
-            const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
-            matrix[j][i] = Math.min(
-              matrix[j][i - 1] + 1,
-              matrix[j - 1][i] + 1,
-              matrix[j - 1][i - 1] + indicator
-            );
-          }
-        }
-        return matrix[b.length][a.length];
-      }
-
+      // Búsqueda y filtros
       function performSearch() {
-        const query = normalizeText(searchInput.value);
+        const query = searchInput.value.toLowerCase().trim();
         const selectedColor = colorFilter.value;
         const selectedTheme = themeFilter.value;
         let resultsFound = false;
 
-        if (query === '' && selectedColor === '' && selectedTheme === '') {
-          sections.forEach(section => {
-            section.classList.remove('hidden');
-            const listItems = section.querySelectorAll('.topic-list li');
-            listItems.forEach(item => item.style.display = 'block');
-          });
-          noResultsMessage.style.display = 'none';
-          return;
-        }
-
         sections.forEach(section => {
-          const sectionTitle = normalizeText(section.querySelector('h2').textContent);
           const buttons = section.querySelectorAll('.topic-list li button');
           let sectionHasMatch = false;
 
           buttons.forEach(btn => {
-            const btnText = normalizeText(btn.textContent);
-            const words = btnText.split(/\s+/).filter(word => word.length > 0);
-            let minDistance = Infinity;
-            words.forEach(word => {
-              const distance = levenshteinDistance(query, word);
-              minDistance = Math.min(minDistance, distance);
-            });
-            const sectionDistance = levenshteinDistance(query, sectionTitle);
-            minDistance = Math.min(minDistance, sectionDistance);
+            const btnText = btn.textContent.toLowerCase();
+            const icon = btn.querySelector('.youtube-icon');
+            const colorMatches = !selectedColor || icon.classList.contains(selectedColor);
+            const themeMatches = !selectedTheme || section.id === selectedTheme;
+            const textMatches = !query || btnText.includes(query);
 
-            const textMatches = btnText.includes(query) || minDistance <= Math.min(3, Math.max(query.length, btnText.length) * 0.25);
-            const colorMatches = selectedColor === '' || btn.querySelector('.youtube-icon').classList.contains(selectedColor);
-            const themeMatches = selectedTheme === '' || section.id === selectedTheme;
-
-            const matches = (query === '' || textMatches) && (selectedColor === '' || colorMatches) && (selectedTheme === '' || themeMatches);
-
-            if (matches) {
-              sectionHasMatch = true;
-              resultsFound = true;
-            }
+            const matches = textMatches && colorMatches && themeMatches;
             btn.parentElement.style.display = matches ? 'block' : 'none';
+            if (matches) sectionHasMatch = true;
+            resultsFound = resultsFound || matches;
           });
 
           section.classList.toggle('hidden', !sectionHasMatch);
@@ -1500,6 +1253,10 @@
       searchInput.addEventListener('input', performSearch);
       colorFilter.addEventListener('change', performSearch);
       themeFilter.addEventListener('change', performSearch);
+
+      // Inicializar
+      restoreStars();
+      updateDashboard();
     });
   </script>
 </body>
