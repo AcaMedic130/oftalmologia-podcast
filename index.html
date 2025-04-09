@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prueba API YouTube</title>
   <script src="https://www.youtube.com/iframe_api"></script>
-  <script src="https://cdn.jsdelivr.net/npm/youtube-transcript-api@0.5.0/dist/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/youtube-transcript-api@0.6.2/dist/index.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -110,8 +110,15 @@
 
   <script>
     let player;
-    const videoId = 'rlwDrMvhHj8'; // Video inicial
+    const videoId = 'dQw4w9WgXcQ'; // Cambié a un video conocido con transcripción y capítulos
     const API_KEY = 'AIzaSyC4al7SDN2mLRNjs3zJ9N7irgD_q-e9fCo'; // Clave API
+
+    // Verificar si YouTubeTranscriptApi está disponible
+    if (typeof YouTubeTranscriptApi === 'undefined') {
+      console.error('YouTubeTranscriptApi no está definido. Verifica que el script se haya cargado correctamente.');
+    } else {
+      console.log('YouTubeTranscriptApi cargado correctamente');
+    }
 
     // Inicializar el reproductor de YouTube
     function onYouTubeIframeAPIReady() {
