@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oftalmología | Podcast</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.0.0/uicons-brands/css/uicons-brands.css'>
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.0.0/uicons-bold-straight/css/uicons-bold-straight.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <button class="dashboard-icon"><i class="fi fi-rr-chart-pie-alt"></i> Dashboard</button>
+  <div class="dashboard-popup">
+    <div class="dashboard-content">
+      <button class="close-btn"><i class="fi fi-rr-cross"></i></button>
+      <div class="dashboard-header">
+        <h2>Dashboard - Análisis de Progreso</h2>
+      </div>
+      <div class="dashboard-indicators">
+        <div class="indicator">
+          <div class="icon"><i class="fi fi-rr-eye"></i></div>
+          <div class="value">Oftalmología</div>
+          <p>Nombre del Curso</p>
+        </div>
+        <div class="indicator">
+          <div class="icon"><i class="fi fi-rr-star"></i></div>
+          <div class="value" id="totalTopics">0</div>
+          <p>Temas Completados</p>
+        </div>
+        <div class="indicator">
+          <div class="icon"><i class="fi fi-rr-percentage"></i></div>
+          <div class="value" id="completionRate">0%</div>
+          <p>Tasa de Completitud</p>
+        </div>
+        <div class="indicator">
+          <div class="icon"><i class="fi fi-rr-book"></i></div>
+          <div class="value" id="importanceIndex">0</div>
+          <p>Índice de Importancia</p>
+        </div>
+        <div class="indicator">
+          <div class="icon"><i class="fi fi-rr-clock"></i></div>
+          <div class="value" id="pendingTopics">0</div>
+          <p>Temas Pendientes</p>
+        </div>
+      </div>
+      <div class="dashboard-body">
+        <div class="dashboard-left">
+          <div class="dashboard-section total-desertion">
+            <h3><i class="fi fi-rr-chart-pie"></i> Progreso Total</h3>
+            <div class="chart-container">
+              <canvas id="totalProgressChart"></canvas>
+            </div>
+          </div>
+          <div class="dashboard-section by-reason">
+            <h3><i class="fi fi-rr-star"></i> Importancia por Prioridad</h3>
+            <div id="byPriority"></div>
+          </div>
+          <div class="dashboard-section by-hours">
+            <h3><i class="fi fi-rr-calendar"></i> Completitud por Día</h3>
+            <div class="chart-container">
+              <canvas id="byDayChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-center">
+          <div class="dashboard-section by-gender-age">
+            <h3><i class="fi fi-rr-chart-histogram"></i> Completitud por Sección y Prioridad</h3>
+            <div class="chart-container">
+              <canvas id="bySectionPriorityChart"></canvas>
+            </div>
+          </div>
+          <div class="dashboard-section by-education">
+            <h3><i class="fi fi-rr-chart-bar"></i> Completitud por Sección</h3>
+            <div class="chart-container">
+              <canvas id="bySectionChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-right">
+          <div class="dashboard-section by-gender">
+            <h3><i class="fi fi-rr-book"></i> Completitud por Sección</h3>
+            <div id="bySection"></div>
+          </div>
+          <div class="dashboard-section by-academic-resources">
+            <h3><i class="fi fi-rr-book"></i> Recursos Académicos</h3>
+            <div id="byAcademicResources"></div>
+          </div>
+          <div class="dashboard-section total-relation">
+            <h3><i class="fi fi-rr-stats"></i> Relación Total</h3>
+            <div id="totalRelation"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="document-popup" id="document-popup">
+    <div class="document-content">
+      <button class="document-close-btn" id="document-close-btn"><i class="fi fi-rr-cross"></i></button>
+      <iframe src="https://docs.google.com/document/d/1Qb0Vn8t_xPtvnfK_H-TeyP69JMcuZ6gAYboIHOhU5wE/preview" title="Respuestas de Oftalmología"></iframe>
+    </div>
+  </div>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="segment search-container">
+        <h3>Buscador Avanzado</h3>
+        <div class="search-bar">
+          <input type="text" id="search" placeholder="Buscar por título, descripción o palabras clave" />
+          <i class="fi fi-rr-filter filter-icon" id="filter-toggle"></i>
+          <div class="filter-dropdown" id="filter-dropdown">
+            <div class="filter-group">
+              <label>Estado</label>
+              <select id="status-filter">
+                <option value="">Todos</option>
+                <option value="completed">Completado</option>
+                <option value="pending">Pendiente</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Prioridad</label>
+              <select id="priority-filter">
+                <option value="">Todas</option>
+                <option value="icon-rojo">Baja (Rojo)</option>
+                <option value="icon-amarillo">Media (Amarillo)</option>
+                <option value="icon-verde">Alta (Verde)</option>
+                <option value="icon-plomo">Sin Prioridad (Plomo)</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Tema</label>
+              <select id="theme-filter">
+                <option value="">Todos los temas</option>
+                <option value="section-podcast">Podcast</option>
+                <option value="section-basicas">Ciencias Básicas</option>
+                <option value="section-sindrome">Síndrome Ojo Rojo</option>
+                <option value="section-anexos">Patología de Anexos</option>
+                <option value="section-retinopatias">Retinopatías</option>
+                <option value="section-neuro">Neuroftalmología</option>
+                <option value="section-cataratas">Cataratas</option>
+                <option value="section-ametropias">Ametropías</option>
+                <option value="section-tumores">Tumores Oculares</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Duración</label>
+              <select id="duration-filter">
+                <option value="">Cualquier duración</option>
+                <option value="short">Corta (< 10 min)</option>
+                <option value="medium">Media (10-30 min)</option>
+                <option value="long">Larga (> 30 min)</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Fecha de Completitud</label>
+              <input type="date" id="date-filter" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="segment academic-resources">
+        <h3>Recursos Académicos</h3>
+        <ul class="topic-list">
+          <li><button class="oftalmologia" data-id="guia-estudio" data-video="g__jkZcnpZg">
+            <i class="fi fi-rr-star star" data-id="guia-estudio"></i>
+            <div class="topic-content">Guía de Estudio</div>
+            <i class="fi fi-bs-check-circle check-icon" data-id="guia-estudio"></i>
+          </button></li>
+          <li><button class="oftalmologia" data-id="pareto" data-video="RzLPA99fP_g">
+            <i class="fi fi-rr-star star" data-id="pareto"></i>
+            <div class="topic-content">Pareto</div>
+            <i class="fi fi-bs-check-circle check-icon" data-id="pareto"></i>
+          </button></li>
+          <li><button class="oftalmologia" data-id="evaluacion-formativa">
+            <i class="fi fi-rr-star star" data-id="evaluacion-formativa"></i>
+            <div class="topic-content">Evaluación Formativa</div>
+            <i class="fi fi-bs-check-circle check-icon" data-id="evaluacion-formativa"></i>
+          </button></li>
+          <li><button class="oftalmologia" data-id="estudia-conmigo" data-video="GvTzIvDgNxc">
+            <i class="fi fi-rr-star star" data-id="estudia-conmigo"></i>
+            <div class="topic-content">Estudia Conmigo</div>
+            <i class="fi fi-bs-check-circle check-icon" data-id="estudia-conmigo"></i>
+          </button></li>
+        </ul>
+      </div>
+      <div class="segment topics-container">
+        <h3>Lista de temas</h3>
+        <div class="topics-content">
+          <div id="no-results" class="no-results">No se encontraron resultados para tu búsqueda.</div>
+          <div class="section" id="section-podcast">
+            <h2>Podcast</h2>
+            <ul class="topic-list" id="podcast-list">
+              <li><button class="oftalmologia" data-id="podcast-oftalmologia" data-duration="medium" data-video="rlwDrMvhHj8" data-duration-time="12:32">
+                <i class="fi fi-rr-star star" data-id="podcast-oftalmologia"></i>
+                <div class="topic-content">Oftalmología</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-plomo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-basicas">
+            <h2>Ciencias Básicas</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="embriologia" data-duration="short" data-video="ViIq_RANZs0" data-duration-time="3:23">
+                <i class="fi fi-rr-star star" data-id="embriologia"></i>
+                <div class="topic-content">Embriología</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="fisiologia" data-duration="short" data-video="3iTQ0FTYreY" data-duration-time="7:41">
+                <i class="fi fi-rr-star star" data-id="fisiologia"></i>
+                <div class="topic-content">Fisiología</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="anatomia" data-duration="medium" data-video="V6S44iSabs0" data-duration-time="21:56">
+                <i class="fi fi-rr-star star" data-id="anatomia"></i>
+                <div class="topic-content">Anatomía</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-sindrome">
+            <h2>Síndrome Ojo Rojo</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="conjuntivitis" data-duration="medium" data-video="2KCcwUiva2A" data-duration-time="17:37">
+                <i class="fi fi-rr-star star" data-id="conjuntivitis"></i>
+                <div class="topic-content">Conjuntivitis</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="queratitis" data-duration="medium" data-video="VqXL6-UjPwM" data-duration-time="11:42">
+                <i class="fi fi-rr-star star" data-id="queratitis"></i>
+                <div class="topic-content">Queratitis</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="escleritis" data-duration="short" data-video="qngeFgm9wZc" data-duration-time="5:26">
+                <i class="fi fi-rr-star star" data-id="escleritis"></i>
+                <div class="topic-content">Escleritis</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="uveitis" data-duration="medium" data-video="lfN1OAkmKHo" data-duration-time="11:24">
+                <i class="fi fi-rr-star star" data-id="uveitis"></i>
+                <div class="topic-content">Uveítis</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="glaucoma" data-duration="medium" data-video="_jE4CwkHo_Q" data-duration-time="15:18">
+                <i class="fi fi-rr-star star" data-id="glaucoma"></i>
+                <div class="topic-content">Glaucoma</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="trauma-ocular" data-duration="medium" data-video="tP7vP0HtlSs" data-duration-time="17:53">
+                <i class="fi fi-rr-star star" data-id="trauma-ocular"></i>
+                <div class="topic-content">Trauma Ocular</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-amarillo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-anexos">
+            <h2>Patología de Anexos</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="patologia-palpebral" data-duration="medium" data-video="SaLBIyDjKgY" data-duration-time="11:11">
+                <i class="fi fi-rr-star star" data-id="patologia-palpebral"></i>
+                <div class="topic-content">Patología Palpebral</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="patologia-inflamatoria-orbita" data-duration="short" data-video="BuSwMYoWtQ8" data-duration-time="5:26">
+                <i class="fi fi-rr-star star" data-id="patologia-inflamatoria-orbita"></i>
+                <div class="topic-content">Patología Inflamatoria Órbita</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="patologia-sistema-lagrimal" data-duration="short" data-video="exjjPexckIk" data-duration-time="9:49">
+                <i class="fi fi-rr-star star" data-id="patologia-sistema-lagrimal"></i>
+                <div class="topic-content">Patología de Sistema Lagrimal</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="paralisis-pares-craneales" data-duration="medium" data-video="zaCRKiJLaHs" data-duration-time="12:37">
+                <i class="fi fi-rr-star star" data-id="paralisis-pares-craneales"></i>
+                <div class="topic-content">Parálisis de Pares Craneales</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-retinopatias">
+            <h2>Retinopatías</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="desprendimiento-retina" data-duration="short" data-video="XgbdD2gH9Nk" data-duration-time="8:39">
+                <i class="fi fi-rr-star star" data-id="desprendimiento-retina"></i>
+                <div class="topic-content">Desprendimiento Retina</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="retinopatia-dm" data-duration="medium" data-video="4c8YoNN5ydA" data-duration-time="12:26">
+                <i class="fi fi-rr-star star" data-id="retinopatia-dm"></i>
+                <div class="topic-content">Retinopatía DM</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="retinopatia-hta" data-duration="short" data-video="YY4ePiyQDhc" data-duration-time="7:58">
+                <i class="fi fi-rr-star star" data-id="retinopatia-hta"></i>
+                <div class="topic-content">Retinopatía HTA</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="ovcr-oacr" data-duration="short" data-video="5n6qXISAgk0" data-duration-time="7:25">
+                <i class="fi fi-rr-star star" data-id="ovcr-oacr"></i>
+                <div class="topic-content">OVCR – OACR</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="degeneracion-macular" data-duration="_srcdir" data-video="qyo7DfAUbmY" data-duration-time="6:51">
+                <i class="fi fi-rr-star star" data-id="degeneracion-macular"></i>
+                <div class="topic-content">Degeneración Macular Asociada Edad</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-neuro">
+            <h2>Neuroftalmología</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="defectos-campo-visual" data-duration="medium" data-video="nrWi2sC7j2g" data-duration-time="11:44">
+                <i class="fi fi-rr-star star" data-id="defectos-campo-visual"></i>
+                <div class="topic-content">Defectos de Campo Visual</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="defectos-pupilares" data-duration="medium" data-video="0hhzQZ_VOqw" data-duration-time="16:19">
+                <i class="fi fi-rr-star star" data-id="defectos-pupilares"></i>
+                <div class="topic-content">Defectos Pupilares</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+              <li><button class="oftalmologia" data-id="neuritis-optica" data-duration="short" data-video="Q3Bnum8wjog" data-duration-time="6:47">
+                <i class="fi fi-rr-star star" data-id="neuritis-optica"></i>
+                <div class="topic-content">Neuritis Óptica</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-cataratas">
+            <h2>Cataratas</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="cataratas" data-duration="short" data-video="jIfkv4wxWsY" data-duration-time="9:31">
+                <i class="fi fi-rr-star star" data-id="cataratas"></i>
+                <div class="topic-content">Cataratas</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-ametropias">
+            <h2>Ametropías</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="ametropias" data-duration="medium" data-video="nGDslZjZUQo" data-duration-time="12:42">
+                <i class="fi fi-rr-star star" data-id="ametropias"></i>
+                <div class="topic-content">Ametropías</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+            </ul>
+          </div>
+          <div class="section" id="section-tumores">
+            <h2>Tumores Oculares</h2>
+            <ul class="topic-list">
+              <li><button class="oftalmologia" data-id="tumores-oculares" data-duration="short" data-video="RA0qIt_BoBo" data-duration-time="7:11">
+                <i class="fi fi-rr-star star" data-id="tumores-oculares"></i>
+                <div class="topic-content">Tumores Oculares</div>
+                <i class="fi fi-brands-youtube youtube-icon icon-rojo"></i>
+              </button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <main class="content">
+      <div class="video-box">
+        <div class="video-box-header">
+          <h1 id="video-title">Guía de Estudio: Oftalmología</h1>
+          <a href="#" class="answers-btn" id="answers-btn" style="display: none;">Respuestas de Oftalmología</a>
+        </div>
+        <p><span id="video-path">Oftalmología / Recursos Académicos / Guía de Estudio</span></p>
+        <div class="video-frame" id="video-frame">
+          <iframe id="video-iframe" src="https://www.youtube.com/embed/g__jkZcnpZg" title="Guía de Estudio Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="recursos-digitales">
+        <h2>Recursos Digitales del Curso</h2>
+        <div class="recursos-container">
+          <a href="https://drive.google.com/file/d/1THXb-ehnktW2I2_mrAZqT0MNNofpJjyh/view?usp=sharing" class="recurso-item">
+            <div class="recurso-icon"><i class="fi fi-rr-folder"></i></div>
+            <div class="recurso-title">Ciencias Básicas</div>
+          </a>
+          <a href="https://drive.google.com/file/d/1VxDYaDBESvAGiqveztfC8XKLE6amW2o_/view?usp=sharing" class="recurso-item">
+            <div class="recurso-icon"><i class="fi fi-rr-folder"></i></div>
+            <div class="recurso-title">Fundamentos Teóricos</div>
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+  <style>
+    * {box-sizing: border-box;margin: 0;padding: 0;font-family: 'Open Sans', sans-serif;}
+    body {background-color: #f4f6fb;color: #333;min-height: 100vh;display: flex;justify-content: center;overflow-y: auto;}
+    body::-webkit-scrollbar,.topics-content::-webkit-scrollbar,.content::-webkit-scrollbar,.video-frame.form-frame iframe::-webkit-scrollbar,.dashboard-content::-webkit-scrollbar,.document-content::-webkit-scrollbar {width: 8px;height: 8px;opacity: 0;transition: opacity 0.3s ease;}
+    body::-webkit-scrollbar-track,.topics-content::-webkit-scrollbar-track,.content::-webkit-scrollbar-track,.video-frame.form-frame iframe::-webkit-scrollbar-track,.dashboard-content::-webkit-scrollbar-track,.document-content::-webkit-scrollbar-track {background: transparent;}
+    body::-webkit-scrollbar-thumb,.topics-content::-webkit-scrollbar-thumb,.content::-webkit-scrollbar-thumb,.video-frame.form-frame iframe::-webkit-scrollbar-thumb,.dashboard-content::-webkit-scrollbar-thumb,.document-content::-webkit-scrollbar-thumb {background: transparent;border-radius: 10px;transition: background 0.3s ease;}
+    body:hover::-webkit-scrollbar-thumb,.topics-content:hover::-webkit-scrollbar-thumb,.content:hover::-webkit-scrollbar-thumb,.video-frame.form-frame iframe:hover::-webkit-scrollbar-thumb,.dashboard-content:hover::-webkit-scrollbar-thumb,.document-content:hover::-webkit-scrollbar-thumb {background: #ff0000;}
+    body:hover::-webkit-scrollbar,.topics-content:hover::-webkit-scrollbar,.content:hover::-webkit-scrollbar,.video-frame.form-frame iframe:hover::-webkit-scrollbar,.dashboard-content:hover::-webkit-scrollbar,.document-content:hover::-webkit-scrollbar {opacity: 1;}
+    .container {display: flex;flex-direction: row;width: 95%;max-width: 1800px;margin: 0 auto;padding: 15px;gap: 15px;height: 100vh;}
+    .sidebar {width: 280px;background-color: transparent;border-radius: 20px;flex-shrink: 0;height: calc(100vh - 30px);display: flex;flex-direction: column;gap: 10px;padding: 0px 2px 2px 2px;overflow-y: hidden;position: relative;}
+    .segment {background-color: white;border-radius: 10px;padding: 1rem;box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);}
+    .segment h3 {font-size: 16px;color: #5271ff;margin-bottom: 0.5rem;font-weight: 600;}
+    .search-container {position: sticky;top: 0;z-index: 5;display: flex;flex-direction: column;gap: 10px;}
+    .search-bar {display: flex;align-items: center;gap: 10px;position: relative;}
+    .search-container input {flex: 1;padding: 10px;border: 1px solid #ccc;border-radius: 6px;font-size: 14px;}
+    .filter-icon {cursor: pointer;font-size: 20px;color: #5271ff;padding: 5px;transition: color 0.2s ease;}
+    .filter-icon:hover {color: #40a9ff;}
+    .filter-dropdown {display: none;position: absolute;top: calc(100% + 5px);left: 15px;width: calc(100% - 30px);background-color: white;border-radius: 10px;box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);padding: 15px;z-index: 10;}
+    .filter-dropdown.active {display: block;}
+    .filter-group {margin-bottom: 15px;}
+    .filter-group label {display: block;font-size: 14px;color: #071437;margin-bottom: 5px;font-weight: 600;}
+    .filter-group select,.filter-group input[type="date"] {width: 100%;padding: 8px;border: 1px solid #ddd;border-radius: 6px;background-color: #f9f9f9;cursor: pointer;font-size: 14px;}
+    .topics-container {background-color: white;border-radius: 10px;padding: 1rem;box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);height: calc(100vh - 110px);display: flex;flex-direction: column;overflow: hidden;}
+    .topics-content {flex: 1;max-height: calc(100% - 40px);overflow-y: auto;}
+    .section {margin-bottom: 1.5rem;}
+    .section.hidden {display: none;}
+    .section h2 {font-size: 17px;color: #99a1b7;margin-bottom: 0.5rem;border-bottom: 1px solid #eee;padding-bottom: 0.3rem;font-weight: 600;}
+    .topic-list {list-style: none;}
+    .topic-list li button {width: 100%;padding: 10px;text-align: left;background-color: #f9f9f9;border: none;border-radius: 6px;cursor: pointer;transition: background 0.2s ease;margin-bottom: 0.3rem;position: relative;display: flex;align-items: center;}
+    .star {font-size: 16px;margin-right: 10px;color: #4B5675;transition: color 0.2s ease;cursor: pointer;}
+    .star.marked {color: #ffd600;}
+    .topic-list li button .topic-content {flex-grow: 1;font-size: 15px;word-break: break-word;}
+    .topic-list li button span {display: block;font-size: 12px;color: #78829d;font-weight: 400;}
+    .topic-list li button.podcast {color: #99a1b7;font-weight: 600;}
+    .topic-list li button.oftalmologia {color: #4B5675;font-weight: 600;}
+    .topic-list li button:hover {background-color: #e6f0ff;}
+    .youtube-icon {margin-left: 10px;font-size: 24px;display: flex;justify-content: center;align-items: center;width: 32px;height: 32px;flex-shrink: 0;}
+    .icon-rojo { color: #ff4d4f; }
+    .icon-verde { color: #00c853; }
+    .icon-amarillo { color: #ffd600; }
+    .icon-plomo { color: #78829d; }
+    .check-icon {margin-left: 10px;font-size: 24px;display: flex;justify-content: center;align-items: center;width: 32px;height: 32px;flex-shrink: 0;color: #4B5675;transition: color 0.2s ease;cursor: pointer;}
+    .check-icon.completed {color: #ffd600;}
+    .content {flex: 1;padding: 30px;background-color: white;border-radius: 20px;height: calc(100vh - 30px);overflow-y: auto;display: flex;flex-direction: column;}
+    .video-box {width: 100%;margin-bottom: 20px;flex: 1;display: flex;flex-direction: column;}
+    .video-box-header {display: flex;justify-content: space-between;align-items: center;margin-bottom: 0.5rem;}
+    .video-box h1 {font-size: 1.5rem;margin: 0;}
+    .answers-btn {padding: 8px 12px;background-color: #ff4d4f;color: white;border-radius: 6px;text-decoration: none;font-size: 14px;font-weight: 600;transition: background-color 0.2s ease;}
+    .answers-btn:hover {background-color: #e63946;}
+    .video-box p {margin-bottom: 1rem;}
+    #video-path {display: flex;flex-wrap: wrap;gap: 20px;font-size: 0.9rem;color: #78829d;font-weight: 600;}
+    #video-path .duration {white-space: nowrap;}
+    .video-frame {flex: 1;position: relative;border-radius: 15px;overflow: hidden;display: flex;justify-content: center;}
+    .video-frame iframe {border: none;border-radius: 15px;}
+    .video-frame:not(.form-frame) {padding-bottom: 56.25%;}
+    .video-frame:not(.form-frame) iframe {position: absolute;top: 0;left: 0;width: 100%;height: 100%;}
+    .video-frame.form-frame {height: 100%;}
+    .video-frame.form-frame iframe.form-iframe {width: 90%;height: 100%;margin: 0 auto;overflow-y: auto;}
+    .recursos-digitales {width: 100%;margin-top: 2rem;}
+    .recursos-digitales.hidden {display: none;}
+    .recursos-digitales h2 {font-size: 1.3rem;margin-bottom: 1.5rem;color: #071437;}
+    .recursos-container {display: flex;flex-wrap: wrap;gap: 15px;}
+    .recurso-item {background-color: #f8f9fa;border-radius: 8px;padding: 15px;width: 160px;text-align: center;text-decoration: none;color: inherit;transition: transform 0.2s, box-shadow 0.2s;}
+    .recurso-item:hover {transform: translateY(-5px);box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);}
+    .recurso-icon {font-size: 40px;color: #5271ff;margin-bottom: 10px;}
+    .recurso-title {font-size: 14px;color: #071437;font-weight: 600;}
+    .no-results {text-align: center;padding: 15px;color: #78829d;font-style: italic;display: none;}
+    .dashboard-icon {position: fixed;top: 15px;right: 15px;background: #5271ff;color: white;border: none;border-radius: 50px;padding: 10px 16px;display: flex;align-items: center;gap: 6px;cursor: pointer;font-size: 14px;font-weight: 600;box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);transition: background 0.3s ease, transform 0.2s ease;z-index: 998;}
+    .dashboard-icon:hover {background: #40a9ff;transform: scale(1.05);}
+    .dashboard-icon i {font-size: 18px;}
+    .dashboard-popup {display: none;position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.6);z-index: 999;justify-content: center;align-items: center;}
+    .dashboard-content {background: #f4f6fb;border-radius: 20px;padding: 20px;width: 90%;max-width: 1400px;height: 90%;max-height: 800px;position: relative;box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);display: flex;flex-direction: column;gap: 15px;overflow-y: auto;overflow-x: hidden;}
+    .close-btn {position: absolute;top: 15px;right: 15px;background: none;border: none;font-size: 20px;font-weight: 700;color: #5271ff;cursor: pointer;transition: color 0.2s ease;}
+    .close-btn:hover {color: #ff4d4f;}
+    .dashboard-header {display: flex;justify-content: space-between;align-items: center;margin-bottom: 10px;flex-wrap: wrap;}
+    .dashboard-header h2 {color: #5271ff;font-size: 20px;font-weight: 600;}
+    .dashboard-indicators {display: flex;gap: 15px;margin-bottom: 15px;flex-wrap: wrap;width: 100%;}
+    .indicator {background: #fff;border-radius: 8px;padding: 15px 10px;text-align: center;box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);transition: transform 0.2s ease;flex: 1;min-width: 120px;display: flex;flex-direction: column;justify-content: center;align-items: center;height: 100px;overflow: hidden;}
+    .indicator:hover {transform: translateY(-3px);}
+    .indicator .icon {font-size: 24px;color: #5271ff;margin-bottom: 5px;}
+    .indicator .value {font-size: 24px;font-weight: 700;color: #ff4d4f;}
+    .indicator p {font-size: 12px;color: #78829d;margin-top: 5px;}
+    .dashboard-body {display: flex;flex-direction: row;gap: 15px;width: 100%;}
+    .dashboard-left,.dashboard-center,.dashboard-right {flex: 1;display: flex;flex-direction: column;gap: 15px;width: 33.33%;}
+    .dashboard-section {background: #fff;border-radius: 8px;padding: 15px;display: flex;flex-direction: column;box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);transition: transform 0.2s ease;width: 100%;overflow: hidden;height: auto;}
+    .dashboard-section:hover {transform: translateY(-3px);}
+    .dashboard-section h3 {font-size: 14px;color: #99a1b7;margin-bottom: 10px;font-weight: 600;display: flex;align-items: center;gap: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    .dashboard-section h3 i {color: #5271ff;font-size: 16px;}
+    .total-desertion .chart-container,.by-hours .chart-container,.by-gender-age .chart-container,.by-education .chart-container {width: 100%;display: flex;justify-content: center;align-items: center;overflow: hidden;}
+    .total-desertion .chart-container {width: 200px;height: 200px;margin: 0 auto;}
+    .total-desertion canvas {width: 200px !important;height: 200px !important;}
+    .by-hours .chart-container,.by-gender-age .chart-container,.by-education .chart-container {width: 100%;height: 200px;}
+    .by-hours canvas,.by-gender-age canvas,.by-education canvas {width: 100% !important;height: 200px !important;}
+    .by-reason,.by-gender,.by-academic-resources,.total-relation {width: 100%;overflow: hidden;}
+    .by-reason .reason-item,.by-gender .gender-item,.by-academic-resources .academic-resource-item,.total-relation .relation-item {display: flex;justify-content: space-between;margin-bottom: 5px;font-size: 12px;color: #78829d;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    .by-gender .gender-item i,.by-academic-resources .academic-resource-item i,.total-relation .relation-item i {color: #5271ff;font-size: 14px;margin-right: 5px;}
+    .by-gender .gender-item .value,.by-academic-resources .academic-resource-item .value,.total-relation .relation-item .value {font-weight: 600;color: #ff4d4f;display: flex;align-items: center;gap: 5px;}
+    .by-academic-resources .academic-resource-item {display: flex;justify-content: space-between;align-items: center;margin-bottom: 5px;}
+    .by-academic-resources .academic-resource-item .check-icon {font-size: 14px;margin-left: 5px;}
+    .by-academic-resources .academic-resource-item .check-icon.completed {color: #ffd600;}
+    .resource-check {font-size: 14px;color: #ffd600;}
+    .document-popup {display: none;position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.6);z-index: 1000;justify-content: center;align-items: center;}
+    .document-content {background: white;border-radius: 10px;padding: 20px;width: 90%;max-width: 1000px;height: 90%;max-height: 800px;position: relative;box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);display: flex;flex-direction: column;overflow-y: auto;overflow-x: hidden;}
+    .document-content iframe {width: 100%;height: 100%;border: none;border-radius: 8px;}
+    .document-close-btn {position: absolute;top: 10px;right: 10px;background: none;border: none;font-size: 20px;color: #5271ff;cursor: pointer;transition: color 0.2s ease;}
+    .document-close-btn:hover {color: #ff4d4f;}
+    @media (max-width: 1024px) {
+      .container {width: 94%;padding: 10px;gap: 10px;}
+      .sidebar {height: calc(100vh - 20px);padding: 0px 2px 2px 2px;}
+      .topics-container {height: calc(100vh - 100px);}
+      .dashboard-content {width: 90%;height: 80%;max-height: 700px;}
+      .document-content {width: 90%;height: 80%;max-height: 600px;}
+      .video-frame.form-frame iframe.form-iframe {width: 95%;}
+      .dashboard-indicators {gap: 10px;flex-wrap: wrap;justify-content: center;}
+      .indicator {min-width: 100px;padding: 12px 8px;flex: 0 0 45%;}
+      .indicator:nth-child(1),.indicator:nth-child(2),.indicator:nth-child(3),.indicator:nth-child(4) {flex: 0 0 45%;}
+      .indicator:nth-child(5) {flex: 0 0 100%;}
+      .indicator .value {font-size: 20px;}
+      .indicator p {font-size: 11px;}
+      .dashboard-header h2 {font-size: 18px;}
+      .dashboard-body {flex-direction: column;align-items: center;}
+      .dashboard-left,.dashboard-center,.dashboard-right {width: 100%;max-width: none;}
+      .dashboard-section {width: 90%;margin: 0 auto;}
+      .dashboard-section h3 {font-size: 13px;}
+      .by-reason .reason-item,.by-gender .gender-item,.by-academic-resources .academic-resource-item,.total-relation .relation-item {font-size: 11px;}
+      .resource-check {font-size: 12px;}
+      .total-desertion .chart-container {width: 180px;height: 180px;}
+      .total-desertion canvas {width: 180px !important;height: 180px !important;}
+      .by-hours .chart-container,.by-gender-age .chart-container,.by-education .chart-container {height: 180px;}
+      .by-hours canvas,.by-gender-age canvas,.by-education canvas {height: 180px !important;}
+      #video-path {gap: 10px;}
+    }
+    @media (max-width: 768px) {
+      body {height: auto;min-height: auto;overflow-y: auto;}
+      .container {flex-direction: column;width: 96%;min-height: auto;height: auto;}
+      .sidebar {width: 100%;height: auto;overflow-y: visible;padding: 10px;}
+      .content {height: auto;}
+      .video-box-header {flex-direction: column;align-items: flex-start;}
+      .answers-btn {margin-top: 10px;}
+      .video-frame.form-frame iframe.form-iframe {width: 100%;}
+      .topics-container {height: auto;overflow: visible;}
+      .topics-content {max-height: none;overflow-y: visible;}
+      .dashboard-content {width: 95%;height: 85%;max-height: 600px;padding: 15px;}
+      .document-content {width: 95%;height: 70%;max-height: 500px;}
+      .dashboard-body {flex-direction: column;gap: 10px;align-items: center;}
+      .dashboard-left,.dashboard-center,.dashboard-right {width: 100%;max-width: none;}
+      .dashboard-indicators {gap: 8px;}
+      .indicator {min-width: 90px;padding: 10px 6px;flex: 0 0 47%;}
+      .indicator:nth-child(1),.indicator:nth-child(2),.indicator:nth-child(3),.indicator:nth-child(4) {flex: 0 0 47%;}
+      .indicator:nth-child(5) {flex: 0 0 calc(100% - 20px);margin: 0 10px;}
+      .indicator .value {font-size: 18px;}
+      .indicator p {font-size: 10px;}
+      .dashboard-header h2 {font-size: 16px;}
+      .dashboard-section {width: 94%;margin: 0 auto;}
+      .dashboard-section h3 {font-size: 12px;}
+      .by-reason .reason-item,.by-gender .gender-item,.by-academic-resources .academic-resource-item,.total-relation .relation-item {font-size: 10px;}
+      .resource-check {font-size: 11px;}
+      .total-desertion .chart-container {width: 150px;height: 150px;}
+      .total-desertion canvas {width: 150px !important;height: 150px !important;}
+      .by-hours .chart-container,.by-gender-age .chart-container,.by-education .chart-container {height: 150px;}
+      .by-hours canvas,.by-gender-age canvas,.by-education canvas {height: 150px !important;}
+      #video-path {flex-direction: column;gap: 5px;}
+      #video-path .duration {display: block;}
+    }
+    @media (max-width: 480px) {
+      .container {width: 96%;padding: 5px;}
+      .video-box-header {flex-direction: column;align-items: flex-start;}
+      .answers-btn {margin-top: 10px;}
+      .video-frame.form-frame iframe.form-iframe {width: 100%;}
+      .sidebar {height: auto;padding: 5px;}
+      .topics-container {height: auto;}
+      .dashboard-content {width: 95%;height: 80%;max-height: 500px;padding: 10px;}
+      .document-content {width: 95%;height: 70%;max-height: 400px;padding: 10px;}
+      .dashboard-indicators {gap: 8px;}
+      .indicator {min-width: 80px;padding: 8px 6px;flex: 0 0 47%;}
+      .indicator:nth-child(1),.indicator:nth-child(2),.indicator:nth-child(3),.indicator:nth-child(4) {flex: 0 0 47%;}
+      .indicator:nth-child(5) {flex: 0 0 calc(100% - 20px);margin: 0 10px;}
+      .indicator .value {font-size: 16px;}
+      .indicator p {font-size: 9px;}
+      .dashboard-header h2 {font-size: 14px;}
+      .dashboard-section {width: 94%;margin: 0 auto;}
+      .dashboard-section h3 {font-size: 11px;}
+      .by-reason .reason-item,.by-gender .gender-item,.by-academic-resources .academic-resource-item,.total-relation .relation-item {font-size: 9px;}
+      .resource-check {font-size: 10px;}
+      .total-desertion .chart-container {width: 120px;height: 120px;}
+      .total-desertion canvas {width: 120px !important;height: 120px !important;}
+      .by-hours .chart-container,.by-gender-age .chart-container,.by-education .chart-container {height: 120px;}
+      .by-hours canvas,.by-gender-age canvas,.by-education canvas {height: 120px !important;}
+    }
+  </style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const topicButtons = document.querySelectorAll('.topic-list li button');
+    const sections = document.querySelectorAll('.section');
+    const totalTopics = topicButtons.length;
+    const markedStars = JSON.parse(localStorage.getItem('markedStars')) || {};
+    const searchInput = document.getElementById('search');
+    const noResultsMessage = document.getElementById('no-results');
+    const filterToggle = document.getElementById('filter-toggle');
+    const filterDropdown = document.getElementById('filter-dropdown');
+    const statusFilter = document.getElementById('status-filter');
+    const priorityFilter = document.getElementById('priority-filter');
+    const themeFilter = document.getElementById('theme-filter');
+    const durationFilter = document.getElementById('duration-filter');
+    const dateFilter = document.getElementById('date-filter');
+    const dashboardIcon = document.querySelector('.dashboard-icon');
+    const dashboardPopup = document.querySelector('.dashboard-popup');
+    const closeBtn = document.querySelector('.close-btn');
+    const videoFrame = document.getElementById('video-frame');
+    const videoTitle = document.getElementById('video-title');
+    const videoPath = document.getElementById('video-path');
+    const videoBox = document.querySelector('.video-box');
+    const recursosDigitales = document.querySelector('.recursos-digitales');
+    const documentPopup = document.getElementById('document-popup');
+    const documentCloseBtn = document.getElementById('document-close-btn');
+    const answersBtn = document.getElementById('answers-btn');
+    let byDayChart, bySectionPriorityChart, bySectionChart, totalProgressChart;
+    function restoreStarsAndChecks() {
+      topicButtons.forEach(button => {
+        const id = button.getAttribute('data-id');
+        const star = button.querySelector('.star');
+        const check = button.querySelector('.check-icon');
+        if (markedStars[id]?.marked) {
+          star.classList.add('marked');
+          star.classList.remove('fi-rr-star');
+          star.classList.add('fi-sr-star');
+          if (check) check.classList.add('completed');
+        }
+      });
+    }
+    function toggleMark(id, star, check, mark) {
+      if (mark) {
+        star.classList.add('marked');
+        star.classList.remove('fi-rr-star');
+        star.classList.add('fi-sr-star');
+        if (check) check.classList.add('completed');
+        markedStars[id] = { marked: true, date: new Date().toISOString() };
+      } else {
+        star.classList.remove('marked');
+        star.classList.remove('fi-sr-star');
+        star.classList.add('fi-rr-star');
+        if (check) check.classList.remove('completed');
+        markedStars[id] = { marked: false, date: null };
+      }
+      localStorage.setItem('markedStars', JSON.stringify(markedStars));
+      updateDashboard();
+      performSearch();
+    }
+    function updateIframe(src, isForm = false) {
+      videoFrame.innerHTML = '';
+      const newIframe = document.createElement('iframe');
+      newIframe.src = src;
+      newIframe.title = isForm ? "Formulario de Evaluación" : "Video de YouTube";
+      newIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+      newIframe.setAttribute('allowfullscreen', '');
+      if (isForm) {
+        newIframe.className = 'form-iframe';
+        newIframe.setAttribute('scrolling', 'yes');
+        videoFrame.classList.add('form-frame');
+      } else {
+        newIframe.style.position = 'absolute';
+        newIframe.style.top = '0';
+        newIframe.style.left = '0';
+        newIframe.style.width = '100%';
+        newIframe.style.height = '100%';
+        videoFrame.classList.remove('form-frame');
+      }
+      videoFrame.appendChild(newIframe);
+    }
+    topicButtons.forEach((button) => {
+      const id = button.getAttribute('data-id');
+      const star = button.querySelector('.star');
+      const check = button.querySelector('.check-icon');
+      const isAcademicResource = button.closest('.academic-resources');
+      const videoId = button.getAttribute('data-video');
+      const durationTime = button.getAttribute('data-duration-time') || 'N/A';
+      star.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isMarked = star.classList.contains('marked');
+        toggleMark(id, star, check, !isMarked);
+      });
+      if (check) {
+        check.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isMarked = check.classList.contains('completed');
+          toggleMark(id, star, check, !isMarked);
+        });
+      }
+      button.addEventListener('click', () => {
+        const topicName = button.querySelector('.topic-content').textContent;
+        const sectionName = button.closest('.section') ? button.closest('.section').querySelector('h2').textContent : 'Recursos Académicos';
+        if (isAcademicResource) {
+          videoTitle.textContent = `${topicName}: Oftalmología`;
+          videoPath.innerHTML = `Oftalmología / Recursos Académicos / ${topicName}${durationTime !== 'N/A' ? ` <span class="duration">Duración: ${durationTime}</span>` : ''}`;
+        } else {
+          videoTitle.textContent = topicName;
+          videoPath.innerHTML = `Oftalmología / ${sectionName} / ${topicName}${durationTime !== 'N/A' ? ` <span class="duration">Duración: ${durationTime}</span>` : ''}`;
+        }
+        answersBtn.style.display = id === 'evaluacion-formativa' ? 'inline-block' : 'none';
+        recursosDigitales.classList.toggle('hidden', id === 'evaluacion-formativa');
+        if (isAcademicResource) {
+          if (id === 'evaluacion-formativa') {
+            updateIframe('https://docs.google.com/forms/d/e/1FAIpQLSeigyTqpDYB6mtxxk3ATEto2iUPKs9ei9dNgtTjCrUZg9z0Xg/viewform?embedded=true', true);
+          } else if (videoId) {
+            updateIframe(`https://www.youtube.com/embed/${videoId}`);
+          }
+        } else if (videoId) {
+          updateIframe(`https://www.youtube.com/embed/${videoId}`);
+        }
+      });
+    });
+    function initializePage() {
+      const guiaEstudioButton = document.querySelector('button[data-id="guia-estudio"]');
+      if (guiaEstudioButton) {
+        guiaEstudioButton.click();
+      }
+    }
+    filterToggle.addEventListener('click', () => {
+      filterDropdown.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+      if (!filterDropdown.contains(e.target) && e.target !== filterToggle) {
+        filterDropdown.classList.remove('active');
+      }
+    });
+    dashboardIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dashboardPopup.style.display = 'flex';
+      if (!byDayChart || !bySectionPriorityChart || !bySectionChart || !totalProgressChart) {
+        initializeCharts();
+      }
+      updateDashboard();
+    });
+    dashboardPopup.addEventListener('click', (e) => {
+      if (e.target === dashboardPopup) dashboardPopup.style.display = 'none';
+    });
+    closeBtn.addEventListener('click', () => {
+      dashboardPopup.style.display = 'none';
+    });
+    answersBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      documentPopup.style.display = 'flex';
+    });
+    documentCloseBtn.addEventListener('click', () => {
+      documentPopup.style.display = 'none';
+    });
+    documentPopup.addEventListener('click', (e) => {
+      if (e.target === documentPopup) documentPopup.style.display = 'none';
+    });
+    function initializeCharts() {
+      const byDayChartCtx = document.getElementById('byDayChart').getContext('2d');
+      byDayChart = new Chart(byDayChartCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+          datasets: [
+            { label: 'Completados', data: [], backgroundColor: '#ff4d4f' },
+            { label: 'Pendientes', data: [], backgroundColor: '#d9d9d9' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true },
+            x: { ticks: { font: { size: 10 } } },
+            y: { ticks: { font: { size: 10 } } }
+          },
+          plugins: {
+            legend: { labels: { font: { size: 10 } } }
+          }
+        }
+      });
+      const bySectionPriorityChartCtx = document.getElementById('bySectionPriorityChart').getContext('2d');
+      bySectionPriorityChart = new Chart(bySectionPriorityChartCtx, {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [
+            { label: 'Rojo', data: [], backgroundColor: '#ff4d4f' },
+            { label: 'Amarillo', data: [], backgroundColor: '#ffd600' },
+            { label: 'Verde', data: [], backgroundColor: '#00c853' },
+            { label: 'Plomo', data: [], backgroundColor: '#78829d' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { stacked: true, ticks: { font: { size: 10 }, autoSkip: false, maxRotation: 45, minRotation: 45 } },
+            y: { stacked: true, beginAtZero: true, ticks: { font: { size: 10 } } }
+          },
+          plugins: {
+            legend: { labels: { font: { size: 10 } } }
+          }
+        }
+      });
+      const bySectionChartCtx = document.getElementById('bySectionChart').getContext('2d');
+      bySectionChart = new Chart(bySectionChartCtx, {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [{ label: 'Progreso', data: [], backgroundColor: '#5271ff' }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { beginAtZero: true, max: 1, ticks: { font: { size: 10 } } },
+            y: { ticks: { font: { size: 10 }, autoSkip: false } }
+          },
+          plugins: {
+            legend: { labels: { font: { size: 10 } } }
+          }
+        }
+      });
+      const totalProgressChartCtx = document.getElementById('totalProgressChart').getContext('2d');
+      totalProgressChart = new Chart(totalProgressChartCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completados', 'Pendientes'],
+          datasets: [{ data: [0, 100], backgroundColor: ['#ff4d4f', '#d9d9d9'], borderWidth: 0 }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: '70%',
+          plugins: {
+            legend: { labels: { font: { size: 10 } } }
+          }
+        }
+      });
+    }
+    function updateDashboard() {
+      const markedCount = Object.values(markedStars).filter(item => item.marked).length;
+      const pendingCount = totalTopics - markedCount;
+      const percentage = ((markedCount / totalTopics) * 100).toFixed(1);
+      const priorityWeights = { 'icon-rojo': 1, 'icon-amarillo': 2, 'icon-verde': 3, 'icon-plomo': 0 };
+      let totalPointsPossible = 0;
+      let completedPoints = 0;
+      topicButtons.forEach(button => {
+        const icon = button.querySelector('.youtube-icon');
+        if (icon) {
+          if (icon.classList.contains('icon-rojo')) totalPointsPossible += priorityWeights['icon-rojo'];
+          else if (icon.classList.contains('icon-amarillo')) totalPointsPossible += priorityWeights['icon-amarillo'];
+          else if (icon.classList.contains('icon-verde')) totalPointsPossible += priorityWeights['icon-verde'];
+          else if (icon.classList.contains('icon-plomo')) totalPointsPossible += priorityWeights['icon-plomo'];
+        }
+      });
+      Object.entries(markedStars).forEach(([id, item]) => {
+        if (item.marked) {
+          const button = document.querySelector(`button[data-id="${id}"]`);
+          if (button) {
+            const icon = button.querySelector('.youtube-icon');
+            if (icon) {
+              if (icon.classList.contains('icon-rojo')) completedPoints += priorityWeights['icon-rojo'];
+              else if (icon.classList.contains('icon-amarillo')) completedPoints += priorityWeights['icon-amarillo'];
+              else if (icon.classList.contains('icon-verde')) completedPoints += priorityWeights['icon-verde'];
+              else if (icon.classList.contains('icon-plomo')) completedPoints += priorityWeights['icon-plomo'];
+            }
+          }
+        }
+      });
+      const importanceIndex = totalPointsPossible ? ((completedPoints / totalPointsPossible) * 100).toFixed(1) : 0;
+      document.getElementById('totalTopics').textContent = markedCount;
+      document.getElementById('completionRate').textContent = `${percentage}%`;
+      document.getElementById('importanceIndex').textContent = importanceIndex;
+      document.getElementById('pendingTopics').textContent = pendingCount;
+      const bySectionDiv = document.getElementById('bySection');
+      bySectionDiv.innerHTML = '';
+      sections.forEach(section => {
+        const buttons = section.querySelectorAll('.topic-list li button');
+        const totalSubtemas = buttons.length;
+        let markedSubtemas = 0;
+        buttons.forEach(btn => {
+          const id = btn.getAttribute('data-id');
+          if (markedStars[id]?.marked) markedSubtemas++;
+        });
+        const item = document.createElement('div');
+        item.classList.add('gender-item');
+        item.innerHTML = `<span><i class="fi fi-rr-book"></i> ${section.querySelector('h2').textContent}</span><span class="value">${markedSubtemas}/${totalSubtemas}</span>`;
+        bySectionDiv.appendChild(item);
+      });
+      const byAcademicResourcesDiv = document.getElementById('byAcademicResources');
+      byAcademicResourcesDiv.innerHTML = '';
+      const academicButtons = document.querySelectorAll('.academic-resources .topic-list li button');
+      const totalAcademic = academicButtons.length;
+      let markedAcademic = 0;
+      academicButtons.forEach(btn => {
+        const id = btn.getAttribute('data-id');
+        if (markedStars[id]?.marked) markedAcademic++;
+      });
+      const totalItem = document.createElement('div');
+      totalItem.classList.add('academic-resource-item');
+      totalItem.innerHTML = `<span><i class="fi fi-rr-book"></i> Total de completados</span><span class="value">${markedAcademic}/${totalAcademic}${markedAcademic === totalAcademic ? '<i class="fi fi-bs-check-circle resource-check"></i>' : ''}</span>`;
+      byAcademicResourcesDiv.appendChild(totalItem);
+      const subtemas = [
+        { id: 'guia-estudio', name: 'Guía de Estudio' },
+        { id: 'pareto', name: 'Pareto' },
+        { id: 'evaluacion-formativa', name: 'Evaluación Formativa' },
+        { id: 'estudia-conmigo', name: 'Estudia Conmigo' }
+      ];
+      subtemas.forEach(subtema => {
+        const id = subtema.id;
+        const name = subtema.name;
+        const isMarked = markedStars[id]?.marked;
+        const item = document.createElement('div');
+        item.classList.add('academic-resource-item');
+        const checkClass = isMarked ? 'check-icon completed fi fi-bs-check-circle' : 'check-icon fi fi-bs-check-circle';
+        item.innerHTML = `<span><i class="fi fi-rr-book"></i> ${name}</span><span class="value"><i class="${checkClass}" data-id="${id}"></i></span>`;
+        byAcademicResourcesDiv.appendChild(item);
+      });
+      const byPriorityDiv = document.getElementById('byPriority');
+      byPriorityDiv.innerHTML = '';
+      const priorityCounts = { red: 0, yellow: 0, green: 0, plomo: 0 };
+      const totalPriorityCounts = { red: 0, yellow: 0, green: 0, plomo: 0 };
+      topicButtons.forEach(button => {
+        const icon = button.querySelector('.youtube-icon');
+        if (icon) {
+          if (icon.classList.contains('icon-rojo')) totalPriorityCounts.red++;
+          else if (icon.classList.contains('icon-amarillo')) totalPriorityCounts.yellow++;
+          else if (icon.classList.contains('icon-verde')) totalPriorityCounts.green++;
+          else if (icon.classList.contains('icon-plomo')) totalPriorityCounts.plomo++;
+        }
+        const id = button.getAttribute('data-id');
+        if (markedStars[id]?.marked && icon) {
+          if (icon.classList.contains('icon-rojo')) priorityCounts.red++;
+          else if (icon.classList.contains('icon-amarillo')) priorityCounts.yellow++;
+          else if (icon.classList.contains('icon-verde')) priorityCounts.green++;
+          else if (icon.classList.contains('icon-plomo')) priorityCounts.plomo++;
+        }
+      });
+      const priorityItems = [
+        { label: '1. Baja (Rojo)', value: `${priorityCounts.red}/${totalPriorityCounts.red}`, icon: 'fi-rr-circle', class: 'icon-rojo' },
+        { label: '2. Media (Amarillo)', value: `${priorityCounts.yellow}/${totalPriorityCounts.yellow}`, icon: 'fi-rr-circle', class: 'icon-amarillo' },
+        { label: '3. Alta (Verde)', value: `${priorityCounts.green}/${totalPriorityCounts.green}`, icon: 'fi-rr-circle', class: 'icon-verde' },
+        { label: '4. Sin Prioridad (Plomo)', value: `${priorityCounts.plomo}/${totalPriorityCounts.plomo}`, icon: 'fi-rr-circle', class: 'icon-plomo' }
+      ];
+      priorityItems.forEach(item => {
+        const div = document.createElement('div');
+        div.classList.add('reason-item');
+        div.innerHTML = `<span><i class="${item.icon} ${item.class}"></i> ${item.label}</span><span class="value">${item.value}</span>`;
+        byPriorityDiv.appendChild(div);
+      });
+      const dayCounts = Array(7).fill(0);
+      Object.values(markedStars).forEach(item => {
+        if (item.marked && item.date) {
+          const date = new Date(item.date);
+          const day = date.getDay();
+          dayCounts[day]++;
+        }
+      });
+      const pendingDayCounts = Array(7).fill(0);
+      if (byDayChart) {
+        byDayChart.data.datasets[0].data = dayCounts;
+        byDayChart.data.datasets[1].data = pendingDayCounts.map((_, i) => Math.max(0, totalTopics / 7 - dayCounts[i]));
+        byDayChart.update();
+      }
+      const sectionPriorityCounts = {};
+      sections.forEach(section => {
+        const sectionId = section.id;
+        const buttons = section.querySelectorAll('.topic-list li button');
+        const totalSubtemas = buttons.length;
+        sectionPriorityCounts[sectionId] = { red: 0, yellow: 0, green: 0, plomo: 0, name: section.querySelector('h2').textContent, total: totalSubtemas };
+        buttons.forEach(btn => {
+          const id = btn.getAttribute('data-id');
+          if (markedStars[id]?.marked) {
+            const icon = btn.querySelector('.youtube-icon');
+            if (icon && icon.classList.contains('icon-rojo')) sectionPriorityCounts[sectionId].red++;
+            else if (icon && icon.classList.contains('icon-amarillo')) sectionPriorityCounts[sectionId].yellow++;
+            else if (icon && icon.classList.contains('icon-verde')) sectionPriorityCounts[sectionId].green++;
+            else if (icon && icon.classList.contains('icon-plomo')) sectionPriorityCounts[sectionId].plomo++;
+          }
+        });
+      });
+      if (bySectionPriorityChart) {
+        bySectionPriorityChart.data.labels = Object.values(sectionPriorityCounts).map(item => item.name);
+        bySectionPriorityChart.data.datasets[0].data = Object.values(sectionPriorityCounts).map(item => item.total ? item.red / item.total : 0);
+        bySectionPriorityChart.data.datasets[1].data = Object.values(sectionPriorityCounts).map(item => item.total ? item.yellow / item.total : 0);
+        bySectionPriorityChart.data.datasets[2].data = Object.values(sectionPriorityCounts).map(item => item.total ? item.green / item.total : 0);
+        bySectionPriorityChart.data.datasets[3].data = Object.values(sectionPriorityCounts).map(item => item.total ? item.plomo / item.total : 0);
+        bySectionPriorityChart.update();
+      }
+      const sectionCounts = [];
+      sections.forEach(section => {
+        const buttons = section.querySelectorAll('.topic-list li button');
+        const totalSubtemas = buttons.length;
+        let markedSubtemas = 0;
+        buttons.forEach(btn => {
+          const id = btn.getAttribute('data-id');
+          if (markedStars[id]?.marked) markedSubtemas++;
+        });
+        const progress = totalSubtemas ? markedSubtemas / totalSubtemas : 0;
+        sectionCounts.push({ name: section.querySelector('h2').textContent, progress });
+      });
+      if (bySectionChart) {
+        bySectionChart.data.labels = sectionCounts.map(item => item.name);
+        bySectionChart.data.datasets[0].data = sectionCounts.map(item => item.progress);
+        bySectionChart.update();
+      }
+      if (totalProgressChart) {
+        totalProgressChart.data.datasets[0].data = [markedCount, pendingCount];
+        totalProgressChart.update();
+      }
+      const totalRelationDiv = document.getElementById('totalRelation');
+      totalRelationDiv.innerHTML = '';
+      const relationItems = [
+        { label: 'Total de Videos', value: totalTopics, icon: 'fi-rr-video-camera' },
+        { label: 'Videos Completados', value: markedCount, icon: 'fi-rr-check-circle' },
+        { label: 'Videos Pendientes', value: pendingCount, icon: 'fi-rr-time-forward' },
+        { label: 'Tasa de Progreso', value: `${percentage}%`, icon: 'fi-rr-stats' },
+        { label: 'Índice Prioridad', value: importanceIndex, icon: 'fi-rr-star' }
+      ];
+      relationItems.forEach(item => {
+        const div = document.createElement('div');
+        div.classList.add('relation-item');
+        div.innerHTML = `<span><i class="${item.icon}"></i> ${item.label}</span><span class="value">${item.value}</span>`;
+        totalRelationDiv.appendChild(div);
+      });
+    }
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+    function levenshteinDistance(a, b) {
+      const matrix = [];
+      for (let i = 0; i <= b.length; i++) {
+        matrix[i] = [i];
+      }
+      for (let j = 0; j <= a.length; j++) {
+        matrix[0][j] = j;
+      }
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          if (b.charAt(i - 1) === a.charAt(j - 1)) {
+            matrix[i][j] = matrix[i - 1][j - 1];
+          } else {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j - 1] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j] + 1
+            );
+          }
+        }
+      }
+      return matrix[b.length][a.length];
+    }
+    function performSearch() {
+      const query = normalizeText(searchInput.value);
+      const status = statusFilter.value;
+      const priority = priorityFilter.value;
+      const theme = themeFilter.value;
+      const duration = durationFilter.value;
+      const date = dateFilter.value;
+      let visibleCount = 0;
+      sections.forEach(section => {
+        const buttons = section.querySelectorAll('.topic-list li button');
+        let sectionVisible = false;
+        buttons.forEach(button => {
+          const title = normalizeText(button.querySelector('.topic-content').textContent);
+          const id = button.getAttribute('data-id');
+          const icon = button.querySelector('.youtube-icon');
+          const buttonDuration = button.getAttribute('data-duration');
+          const isCompleted = markedStars[id]?.marked;
+          const completionDate = markedStars[id]?.date ? new Date(markedStars[id].date).toISOString().split('T')[0] : '';
+          const sectionId = button.closest('.section').id;
+          let matchesQuery = true;
+          if (query) {
+            const distance = levenshteinDistance(query, title);
+            const maxDistance = title.length > 4 ? 2 : 1;
+            matchesQuery = title.includes(query) || distance <= maxDistance;
+          }
+          let matchesStatus = status ? (status === 'completed' ? isCompleted : !isCompleted) : true;
+          let matchesPriority = priority ? (icon && icon.classList.contains(priority)) : true;
+          let matchesTheme = theme ? sectionId === theme : true;
+          let matchesDuration = duration ? buttonDuration === duration : true;
+          let matchesDate = date ? completionDate === date : true;
+          if (matchesQuery && matchesStatus && matchesPriority && matchesTheme && matchesDuration && matchesDate) {
+            button.closest('li').style.display = 'block';
+            sectionVisible = true;
+            visibleCount++;
+          } else {
+            button.closest('li').style.display = 'none';
+          }
+        });
+        section.classList.toggle('hidden', !sectionVisible);
+      });
+      noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+    searchInput.addEventListener('input', performSearch);
+    statusFilter.addEventListener('change', performSearch);
+    priorityFilter.addEventListener('change', performSearch);
+    themeFilter.addEventListener('change', performSearch);
+    durationFilter.addEventListener('change', performSearch);
+    dateFilter.addEventListener('change', performSearch);
+    restoreStarsAndChecks();
+    initializePage();
+  });
+</script>
+</body>
+</html>
